@@ -1,45 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  //1. input value 값으로 toDo 받아오기
-  const [toDo, setToDo] = useState("");
-  //2. 여러개의 toDo 담는 array, 디폴트 값은 비어 있는 array로 작성
-  const [toDos, setToDos] = useState([]);
-  const onChange = (event) => setToDo(event.target.value);
-  //form의 button 클릭시 submit 되는데 그 때 자동 새고 되는 거 막기 위해 아래 코드 작성
-  const onSubmit = (event) => {
-    event.preventDefault();
-    //toTo 비어 있으면 submit 되지 않도록 return 시키자.
-    if (toDo === "") {
-      return;
-    }
-    //setToDos에 기존에 가지고 있던 currentArray의 element들과 toDo 넣어 return하기
-    setToDos((currentArray) => [...currentArray, toDo]);
-    //그리고 submit되고 나서는 input 값 비워주자. 모디파이어에 빈 값 주면된다.
-    setToDo("");
-  };
-  //투두리스트 삭제하기
-  const deleteToDo = (index) => {
-    setToDos(toDos.filter((toDo, toDoIndex) => index !== toDoIndex));
-  };
+  //2가지 state
+  //🌟 1. 로딩, 기본 값 true
+  const [loading, setLoading] = useState(true);
+  //🌟 2. 코인 API의 데이터, 즉 코인 리스트 가지고 있는 state, 기본 값 빈 array(코인 리스트 배열이라서)
+  const [coins, setCoins] = useState([]);
+  //✅ 코인 API: 컴포넌트 처음 렌더되었을 때만 실행: 아무 state도 주시하지 않으면 된다.
+  useEffect(() => {
+    //코인 api를 fetch하고 네트워크를 확인하면 request/response가 잘되고 있는 것을 확인 할 수 있다.
+    //response로부터 코인의 json을 추출해 보자.
+    //- 코인 api를 페치한 후(then), response를 받아서 response.json을 return해 주면 된다.
+    //- 그러고 나서(then), 그 json을 가지고 콘솔로그 해보자.
+    //결과는 엄청 큰 배열 반환된다. = 코인 데이터 배열
+    //- 따라서 반환되는 json의 값을 setCoins해서 coins에 값을 업뎃시키자.
+    //- 그리고 동시에 loading을 false로 바꿔줘야 한다.
+    fetch("https://api.coinpaprika.com/v1/tickers")
+      .then((response) => response.json())
+      .then((json) => {
+        setCoins(json);
+        setLoading(false);
+      });
+  }, []);
+  const [] = useState();
   return (
     <div>
-      <h1>My To Do List ({toDos.length})</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          onChange={onChange}
-          value={toDo}
-          type="text"
-          placeholder="Write your to do..."
-        ></input>
-        <button>Add To Do</button>
-      </form>
-      <hr />
+      <h1>The Coins! ({coins.length})</h1>
+      {loading ? <strong>Loading...</strong> : null}
       <ul>
-        {toDos.map((toDo, index) => (
-          <li key={index}>
-            {toDo}
-            <button onClick={() => deleteToDo(index)}>❌</button>
+        {coins.map((coin) => (
+          <li key={coin.id}>
+            {coin.rank}. {coin.name}({coin.symbol}): {coin.quotes.USD.price} USD
           </li>
         ))}
       </ul>
