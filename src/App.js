@@ -13,19 +13,14 @@ function App() {
     if (toDo === "") {
       return;
     }
-    //이전값 받아오기
-    // 첫 번째 인자로 현재 state 받아오는 함수 적어주자.
-    //그리고 새로운 array 받아와서 return해주자. 이 부분이 상당히 중요하다. state는 항상 새로운 거여야 한다.
-    //그리고 그 새로운 []에는 방금 적은 toDo와, toDos를 넣어주면 된다.
+    //setToDos에 기존에 가지고 있던 currentArray의 element들과 toDo 넣어 return하기
     setToDos((currentArray) => [...currentArray, toDo]);
-    //그리고 submit되고 나서는 input 값 비워주자. 그러려면 모디파이어에 빈 값 주면 된다.
+    //그리고 submit되고 나서는 input 값 비워주자. 모디파이어에 빈 값 주면된다.
     setToDo("");
   };
-  console.log(toDos);
-  const deleteToDo = (event) => {
-    //console.log(event.target.parentElement);
-    const li = event.target.parentElement;
-    li.remove();
+  //투두리스트 삭제하기
+  const deleteToDo = (index) => {
+    setToDos(toDos.filter((toDo, toDoIndex) => index !== toDoIndex));
   };
   return (
     <div>
@@ -44,7 +39,7 @@ function App() {
         {toDos.map((toDo, index) => (
           <li key={index}>
             {toDo}
-            <button onClick={deleteToDo}>❌</button>
+            <button onClick={() => deleteToDo(index)}>❌</button>
           </li>
         ))}
       </ul>
