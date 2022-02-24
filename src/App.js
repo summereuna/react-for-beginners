@@ -22,6 +22,11 @@ function App() {
     setToDo("");
   };
   console.log(toDos);
+  const deleteToDo = (event) => {
+    //console.log(event.target.parentElement);
+    const li = event.target.parentElement;
+    li.remove();
+  };
   return (
     <div>
       <h1>My To Do List ({toDos.length})</h1>
@@ -37,7 +42,10 @@ function App() {
       <hr />
       <ul>
         {toDos.map((toDo, index) => (
-          <li key={index}>{toDo}</li>
+          <li key={index}>
+            {toDo}
+            <button onClick={deleteToDo}>❌</button>
+          </li>
         ))}
       </ul>
     </div>
