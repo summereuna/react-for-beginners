@@ -1,0 +1,5 @@
+.movies__movie {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
